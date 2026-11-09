@@ -20,11 +20,10 @@ body {
   color: white;
   min-height: 75px;
   padding: 18px 8%;
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 15px;
+  gap: 18px;
 }
 
 .logo {
@@ -41,6 +40,7 @@ body {
 .navegacion {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 25px;
   flex-wrap: wrap;
 }
@@ -53,6 +53,66 @@ body {
 
 .navegacion a:hover {
   color: #ffd5ce;
+}
+
+.perfil-contenedor {
+  position: relative;
+  justify-self: end;
+}
+
+.boton-perfil {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 9px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  background: transparent;
+  color: white;
+}
+
+.boton-perfil:hover,
+.boton-perfil[aria-expanded='true'] {
+  background: #701016;
+  transform: none;
+}
+
+.boton-perfil svg {
+  width: 21px;
+  height: 21px;
+  fill: currentColor;
+}
+
+.menu-perfil {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 10px);
+  right: 0;
+  width: min(220px, calc(100vw - 32px));
+  max-height: min(60vh, 320px);
+  overflow-y: auto;
+  padding: 6px;
+  border: 1px solid #e6d9d7;
+  border-radius: 8px;
+  background: white;
+  box-shadow: 0 12px 30px rgba(30, 12, 12, 0.2);
+}
+
+.menu-perfil button {
+  display: block;
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 5px;
+  background: transparent;
+  color: #292323;
+  text-align: left;
+}
+
+.menu-perfil button:hover {
+  background: #f7eeec;
+  color: #80151b;
+  transform: none;
 }
 
 .contador-carrito {
@@ -196,6 +256,162 @@ button:hover {
   color: #80151b;
 }
 
+.autenticacion {
+  width: min(100%, 500px);
+  padding: 34px;
+  text-align: center;
+}
+
+.dialogo-modal h2 {
+  color: #80151b;
+  margin: 0 0 14px;
+}
+
+.dialogo-modal > p {
+  color: #686060;
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+
+.autenticacion form {
+  display: grid;
+  gap: 10px;
+  width: min(100%, 440px);
+  margin: 24px auto 16px;
+  text-align: left;
+}
+
+.autenticacion label {
+  font-weight: bold;
+}
+
+.autenticacion input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d5c9c7;
+  border-radius: 6px;
+  font: inherit;
+}
+
+.autenticacion input:focus-visible {
+  outline: 2px solid #a51d25;
+  outline-offset: 2px;
+}
+
+.autenticacion form button {
+  margin-top: 8px;
+}
+
+.autenticacion [role='status'] {
+  margin: 14px auto;
+  color: #80151b;
+  font-weight: bold;
+}
+
+.autenticacion > button[type='button'] {
+  background: transparent;
+  color: #80151b;
+  padding: 8px;
+}
+
+.autenticacion > button[type='button']:hover {
+  background: transparent;
+  text-decoration: underline;
+  transform: none;
+}
+
+.capa-modal {
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow-y: auto;
+  padding: 16px;
+  background: rgba(31, 12, 13, 0.68);
+}
+
+.dialogo-modal {
+  position: relative;
+  width: min(100%, 520px);
+  max-height: min(90vh, 760px);
+  overflow-y: auto;
+  padding: 34px;
+  border-radius: 8px;
+  background: #fff;
+  color: #292323;
+  text-align: left;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+}
+
+.etiqueta-modal {
+  margin-bottom: 8px;
+  color: #a51d25;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.aviso-autenticacion,
+.aviso-checkout {
+  padding: 12px 14px;
+  border-left: 3px solid #a51d25;
+  background: #f8efed;
+  color: #55383a !important;
+}
+
+.boton-cerrar-modal {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  background: transparent;
+  color: #5b4445;
+  font-size: 26px;
+  line-height: 1;
+}
+
+.boton-cerrar-modal:hover {
+  background: #f7eeec;
+  color: #80151b;
+  transform: none;
+}
+
+.boton-checkout {
+  display: block;
+  margin: 20px 0 0 auto;
+}
+
+.resumen-compra {
+  margin: 20px 0;
+  list-style: none;
+}
+
+.resumen-compra li {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #eadfdd;
+}
+
+.resumen-compra li span {
+  overflow-wrap: anywhere;
+}
+
+.resumen-compra li strong {
+  white-space: nowrap;
+}
+
+.total-modal {
+  color: #80151b !important;
+  font-weight: bold;
+  text-align: right;
+}
+
 .pie-pagina {
   background: #291719;
   color: white;
@@ -206,12 +422,25 @@ button:hover {
 
 @media (max-width: 600px) {
   .encabezado {
-    justify-content: center;
+    grid-template-columns: minmax(0, 1fr) auto;
+    padding: 14px 5%;
+    gap: 12px;
   }
 
   .navegacion {
-    justify-content: center;
+    grid-column: 1 / -1;
+    grid-row: 2;
     gap: 15px;
+  }
+
+  .logo {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .perfil-contenedor {
+    grid-column: 2;
+    grid-row: 1;
   }
 
   .banner h1 {
@@ -220,5 +449,9 @@ button:hover {
 
   .producto-carrito {
     align-items: flex-start;
+  }
+
+  .dialogo-modal {
+    padding: 30px 22px 24px;
   }
 }

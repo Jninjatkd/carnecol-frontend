@@ -1,5 +1,5 @@
 
-function Cart({ carrito, eliminarDelCarrito }) {
+function Cart({ carrito, eliminarDelCarrito, onCheckout }) {
   // Calcula el valor total de los productos seleccionados.
   const total = carrito.reduce(
     (suma, producto) => suma + producto.precio * producto.cantidad,
@@ -40,6 +40,9 @@ function Cart({ carrito, eliminarDelCarrito }) {
           <h3 className="total-carrito">
             Total: ${total.toLocaleString('es-CO')}
           </h3>
+          <button className="boton-checkout" type="button" onClick={onCheckout}>
+            Continuar compra
+          </button>
         </>
       )}
     </section>

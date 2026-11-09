@@ -1,10 +1,11 @@
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 // Importación de los componentes de Carnecol.
 import Header from './components/Header.jsx'
 import ProductCard from './components/ProductCard.jsx'
 import Cart from './components/Cart.jsx'
+import Auth from './components/Auth.jsx'
 import Footer from './components/Footer.jsx'
 
 import './App.css'
@@ -44,6 +45,10 @@ const productosIniciales = [
 function App() {
   // Estado que almacena los productos del carrito.
   const [carrito, setCarrito] = useState([])
+  const [usuarioSesion, setUsuarioSesion] = useState(null)
+  const [modalAuth, setModalAuth] = useState(null)
+  const [checkoutAbierto, setCheckoutAbierto] = useState(false)
+  const [perfilAbierto, setPerfilAbierto] = useState(false)
 
   // Agrega productos o aumenta su cantidad si ya existen.
   const agregarAlCarrito = (producto) => {
@@ -77,9 +82,56 @@ function App() {
     0
   )
 
+  const abrirAutenticacion = (modo, aviso = '', continuarCheckout = false) => {
+    setModalAuth({ modo, aviso, continuarCheckout })
+  }
+
+  const manejarLoginExitoso = (usuario) => {
+    const continuarCheckout = modalAuth?.continuarCheckout
+    setUsuarioSesion(usuario)
+    setModalAuth(null)
+
+    if (continuarCheckout) {
+      setCheckoutAbierto(true)
+    }
+  }
+
+  const manejarCheckout = () => {
+    if (!usuarioSesion) {
+      abrirAutenticacion(
+        'login',
+        'Inicia sesión o regístrate para continuar con tu compra.',
+        true
+      )
+      return
+    }
+
+    setCheckoutAbierto(true)
+  }
+
+  useEffect(() => {
+    if (!checkoutAbierto && !perfilAbierto) return undefined
+
+    const manejarTecla = (evento) => {
+      if (evento.key === 'Escape') {
+        setCheckoutAbierto(false)
+        setPerfilAbierto(false)
+      }
+    }
+
+    window.addEventListener('keydown', manejarTecla)
+    return () => window.removeEventListener('keydown', manejarTecla)
+  }, [checkoutAbierto, perfilAbierto])
+
   return (
     <div className="aplicacion">
-      <Header cantidadCarrito={cantidadCarrito} />
+      <Header
+        cantidadCarrito={cantidadCarrito}
+        usuarioSesion={usuarioSesion}
+        onAbrirAutenticacion={abrirAutenticacion}
+        onCerrarSesion={() => setUsuarioSesion(null)}
+        onAbrirPerfil={() => setPerfilAbierto(true)}
+      />
 
       <main>
         <section className="presentacion" id="inicio">
@@ -128,8 +180,87 @@ function App() {
         <Cart
           carrito={carrito}
           eliminarDelCarrito={eliminarDelCarrito}
+          onCheckout={manejarCheckout}
         />
       </main>
+
+      {modalAuth && (
+        <Auth
+          modoInicial={modalAuth.modo}
+          aviso={modalAuth.aviso}
+          onClose={() => setModalAuth(null)}
+          onAuthenticated={manejarLoginExitoso}
+        />
+      )}
+
+      {checkoutAbierto && (
+        <div
+          className="capa-modal"
+          onMouseDown={(evento) => {
+            if (evento.target === evento.currentTarget) setCheckoutAbierto(false)
+          }}
+        >
+          <section className="dialogo-modal" role="dialog" aria-modal="true" aria-labelledby="checkout-titulo">
+            <button
+              className="boton-cerrar-modal"
+              type="button"
+              aria-label="Cerrar revisión de compra"
+              onClick={() => setCheckoutAbierto(false)}
+            >
+              ×
+            </button>
+            <p className="etiqueta-modal">COMPRA</p>
+            <h2 id="checkout-titulo">Revisión de compra</h2>
+            <p>Sesión iniciada como <strong>{usuarioSesion}</strong>.</p>
+            <ul className="resumen-compra">
+              {carrito.map((producto) => (
+                <li key={producto.id}>
+                  <span>{producto.nombre} × {producto.cantidad}</span>
+                  <strong>${(producto.precio * producto.cantidad).toLocaleString('es-CO')}</strong>
+                </li>
+              ))}
+            </ul>
+            <p className="total-modal">
+              Total: ${carrito.reduce((total, producto) => total + producto.precio * producto.cantidad, 0).toLocaleString('es-CO')}
+            </p>
+            <p className="aviso-checkout" role="status">
+              El backend actual no ofrece una ruta para registrar pedidos. Esta revisión no envía ni confirma una compra.
+            </p>
+            <button type="button" onClick={() => setCheckoutAbierto(false)}>
+              Volver al carrito
+            </button>
+          </section>
+        </div>
+      )}
+
+      {perfilAbierto && (
+        <div
+          className="capa-modal"
+          onMouseDown={(evento) => {
+            if (evento.target === evento.currentTarget) setPerfilAbierto(false)
+          }}
+        >
+          <section className="dialogo-modal" role="dialog" aria-modal="true" aria-labelledby="perfil-titulo">
+            <button
+              className="boton-cerrar-modal"
+              type="button"
+              aria-label="Cerrar perfil"
+              onClick={() => setPerfilAbierto(false)}
+            >
+              ×
+            </button>
+            <p className="etiqueta-modal">CUENTA</p>
+            <h2 id="perfil-titulo">Mi perfil</h2>
+            <p>Usuario: <strong>{usuarioSesion}</strong></p>
+            <p className="aviso-checkout">
+              El backend no proporciona datos adicionales de perfil; se muestra el usuario de esta sesión.
+            </p>
+            <button type="button" onClick={() => setPerfilAbierto(false)}>
+              Cerrar
+            </button>
+          </section>
+        </div>
+      )}
 
       <Footer />
     </div>
